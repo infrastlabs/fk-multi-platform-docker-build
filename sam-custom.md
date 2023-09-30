@@ -11,15 +11,18 @@
 # Dockerfile: arg x2
 
 
-# pri-registry:
+# pri-registry: (nerdctl+buildkit+ctd直接OK; buildx:domain/certs>>TODO)
 #  1.priv domain
 #  2.priv certs
 # filesystem/docker
 
 # 物理机 | 容器Pod内运行
 # attestation: registry/syncer
+```
 
+**Ref**
 
+```bash
 # fk-edgecore-indocker: @2022.12 (ctd,ctd-fuse,cni,runc, crictl/nerdctl)
 \cp -a $arch/containerd-1.6.15-linux-$arch/bin/* /rootfs/usr/local/bin/
 \cp -a $arch/containerd-fuse-overlayfs-1.0.5-linux-$arch/containerd-fuse-overlayfs-grpc /rootfs/usr/local/bin/
@@ -49,16 +52,33 @@ https://github.com/containerd/nerdctl/releases/download/v1.6.0/nerdctl-1.6.0-lin
 
 ```bash
 # 物理机@21.61
-#  buildkitd: sysd(.sock路径在/var/lib下)> ./buildkitd直接跑
-#  nerdctl build: 依赖ctd.sock> 指向docker-ctd\'s dock
+#  1.buildkitd: sysd(.sock路径在/var/lib下)> ./buildkitd直接跑
+#  2.nerdctl build: 依赖ctd.sock> 指向docker-ctd\'s dock 构建失败：
 host-21-61:~/hand_bkit/down # nerdctl build -t t01 . --address=/var/run/docker/containerd/containerd.sock
 FATA[0000] unknown method Server: not implemented
 
 # Kedge@23.192
-ctd: kedge之前配置好的
-buildkitd: 在kedge容器内直接跑
-nerdctl v160/v110: build -t t01 . 正常; --platform=amd64,arm64 也OK `无需binfmt初始`
+#  1.ctd: kedge之前配置好的
+#  2.buildkitd: 在kedge容器内直接跑
+#  3.nerdctl v160/v110: build -t t01 . 正常; 
+#  multi: --platform=amd64,arm64 也OK `无需binfmt初始`
+#  priv: 指向私仓; (导入证书; login; pushOK)
+# root @ f474363c8c64 in .../kedge/down |13:05:21  
+$ docker login test.registry.ssl:8143/t02
+Enter Username: admin
+Enter Password: 
+WARNING: Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+Login Succeeded
+# root @ f474363c8c64 in .../kedge/down |13:05:37  
+$ docker push test.registry.ssl:8143/t02
+index-latest@sha256:5353140ed24d1dacc58832a23ad76bb55d8c8ee118f549168cd2ea773c6ef28a: done           |++++++++++++++++++++++++++++++++++++++| 
+manifest-sha256:c774e5ca3be9f02746abc0ccc9a5a429b7f26a7951633023f61206356fe0df8d:     done           |++++++++++++++++++++++++++++++++++++++| 
+config-sha256:0292ff408f2c4f3b9896ed23d28ca1604061ad9a48008c695251d152ef7841b6:       done           |++++++++++++++++++++++++++++++++++++++| 
+elapsed: 0.2 s                                                                        total:  1.7 Ki (8.5 KiB/s)
 
-
-
+# https://172.25.20.161:8143/
+t021:latest # amd64:2.7 MB | arm64:2.6 MB
+t02:latest # amd64:2.7 MB
 ```
