@@ -45,3 +45,6 @@ EOF
 
 find /etc/docker/certs.d
 md5sum $certDir/cert.crt
+
+# login
+echo admin123 |docker login test.registry.ssl:8143 --username=admin --password-stdin
