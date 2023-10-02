@@ -34,10 +34,10 @@ function dealKind(){
     # echo admin123 |docker login server.k8s.local:18443 --username=admin --password-stdin
 
     # tz
-    # https://blog.csdn.net/weixin_40918067/article/details/116858218
-    # -v /etc/localtime:/etc/localtime:ro -v /etc/timezone:/etc/timezone:ro
-    cat /usr/share/zoneinfo/Asia/Shanghai > /etc/timezone #/etc/localtime
-    cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime
+    # # https://blog.csdn.net/weixin_40918067/article/details/116858218
+    # # -v /etc/localtime:/etc/localtime:ro -v /etc/timezone:/etc/timezone:ro
+    # cat /usr/share/zoneinfo/Asia/Shanghai > /etc/timezone #/etc/localtime
+    # cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime
 
     # limits
     # ulimit -n 6553500 #too many open files ##cannot modify limit: Operation not permitted
