@@ -126,4 +126,5 @@ RUN echo "Installing containerd ..." \
 # STOPSIGNAL SIGRTMIN+3
 
 # NOTE: this is *only* for documentation, the entrypoint is overridden later
-ENTRYPOINT [ "/usr/local/bin/entrypoint", "/sbin/init" ]
+# ENTRYPOINT [ "/usr/local/bin/entrypoint", "/sbin/init" ]
+ENTRYPOINT [ "/bin/bash"]
