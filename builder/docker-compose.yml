@@ -1,0 +1,31 @@
+version: '2.4' #2.4 > 2.0 (docker v1.10.3 @barge)
+# https://docs.docker.com/compose/compose-file/compose-versioning/
+# 2.4  17.12.0+ #2.3  17.06.0+
+# 2.2  1.13.0+  #2.1  1.12.0+  #2.0  1.10.0+
+#systemd@cgroup_v2(--cgroupns=host): #https://github.com/docker/compose/issues/8167
+services:
+  builder:
+    image: registry.cn-shenzhen.aliyuncs.com/infrastlabs/edgecore:lite2.5 #v2.4 #@barge-docker v1.10.3
+    # entrypoint: tail -f /dev/null 
+    entrypoint: /bin/bash /srv/local/builder/entry.sh
+    restart: unless-stopped
+    shm_size: 1g
+    privileged: true
+    network_mode: bridge #host bridge
+    working_dir: /srv/local/builder
+    healthcheck: #notes-with-2.0
+      test: ["CMD", "bash", "-c", "sv status |grep -v 'Running' && exit 1 || exit 0 "]
+    environment:
+    - HOST=${HOSTNAME:-nohost} #hostname得小写 #echo "export HOSTNAME" >> ~/.bashrc; source ~/.bashrc
+    # - SPLIT_CTD_DATA=true
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    extra_hosts:
+      - "server.k8s.local:${SERVER_IP:-172.25.23.194}"
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:rw  #kubelet需要
+    - /_ext:/_ext
+    - ./:/srv/local/builder
+    - ./data/var-lib/containerd:/var/lib/containerd
