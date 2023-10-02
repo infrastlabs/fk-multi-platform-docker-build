@@ -4,7 +4,7 @@ FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/docker-headless:core as trans
   COPY --from=bins /down /down
   ARG TARGETPLATFORM
   ADD _trans.sh /down/
-  RUN bash /down/_trans.sh; echo 12
+  RUN rm -rf /rootfs; bash /down/_trans.sh; echo 12
   RUN \
     rm -rf /rootfs/usr/local/kedge /rootfs/usr/local/k8s;
 
