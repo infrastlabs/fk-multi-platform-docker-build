@@ -27,7 +27,7 @@ mkdir -p /rootfs/usr/local/apps/{cfssl,buildkit,containerd} /rootfs/usr/local/ke
 # cri: ctd,fuse-overlayfs,cni,runc
 \cp -a $arch/containerd-1.6.15-linux-$arch/bin/* /rootfs/usr/local/apps/containerd/
 \cp -a $arch/containerd-fuse-overlayfs-1.0.5-linux-$arch/containerd-fuse-overlayfs-grpc /rootfs/usr/local/apps/containerd/
-rm -f /rootfs/usr/local/bin/containerd-stress /rootfs/usr/local/bin/containerd-shim-runc-v1
+rm -f /rootfs/usr/local/apps/containerd/containerd-stress /rootfs/usr/local/apps/containerd/containerd-shim-runc-v1
 ls /rootfs/usr/local/apps/containerd/ |while read one; do ln -s /usr/local/apps/containerd/$one /rootfs/usr/local/bin/; done
 # cni/runc
 \cp -a $arch/cni-plugins-linux-$arch-v1.2.0/* /rootfs/opt/cni/bin/
