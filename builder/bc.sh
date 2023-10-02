@@ -13,6 +13,7 @@ buildctl build \
     --frontend=dockerfile.v0 \
     --local context=. \
     --local dockerfile=. \
+    --opt platform=linux/amd64,linux/arm64 \
     --output type=image,name=test.registry.ssl:8143/bc:v0.1,push=true
     # --output type=local,dest=/tmp/path-to-output-dir
     
