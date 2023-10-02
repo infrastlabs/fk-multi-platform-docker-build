@@ -8,4 +8,5 @@ EOF
 cd /tmp
 img=t01
 img=test.registry.ssl/t012
-docker build --platform=amd64,arm64 --push -t $img .
+docker build --platform=amd64,arm64 -t $img .
+docker push $img --all-platform
