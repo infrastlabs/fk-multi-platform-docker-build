@@ -24,8 +24,6 @@ case "$1" in
 
     plat="--platform linux/amd64,linux/arm64" ##,linux/arm
     args="--build-arg FULL=/.."
-    # docker buildx build $cache $plat $args --push -t $repo/$ns/$img -f Dockerfile . 
     docker buildx build $cache $plat $args --push -t $repo/$ns/$img -f Dockerfile . 
-
     ;;
 esac
