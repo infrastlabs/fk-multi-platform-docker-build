@@ -89,7 +89,7 @@ COPY files/usr/local/bin/* /usr/local/bin/
 
 
 # bins
-RUN mkdir -p /opt/cni/bin /kind/
+RUN mkdir -p /opt/cni/bin /kind/; chmod +x /usr/local/bin/*
 COPY --from=trans /rootfs /
 
 # 默认版本
