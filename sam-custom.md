@@ -22,6 +22,18 @@
 
 **Ref**
 
+- https://github.com/moby/buildkit
+- https://github.com/containerd/nerdctl
+- https://github.com/containerd/containerd
+- 
+- https://gitee.com/g-k8s/fk-edgecore-indocker/blob/dev/bins2/Dockerfile
+- https://github.com/containernetworking/plugins/releases #CNI
+- https://github.com/opencontainers/runc/ #golang
+- https://github.com/containers/crun #clang
+- https://github.com/containerd/fuse-overlayfs-snapshotter
+- https://github.com/kubernetes-sigs/cri-tools
+- https://github.com/cloudflare/cfssl
+
 ```bash
 # fk-edgecore-indocker: @2022.12 (ctd,ctd-fuse,cni,runc, crictl/nerdctl)
 \cp -a $arch/containerd-1.6.15-linux-$arch/bin/* /rootfs/usr/local/bin/
