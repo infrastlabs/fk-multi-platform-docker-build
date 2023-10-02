@@ -6,4 +6,6 @@ RUN echo 123;  uname -a;
 EOF
 
 cd /tmp
-docker build --platform=amd64,arm64 -t t01 .
+img=t01
+img=test.registry.ssl/t012
+docker build --platform=amd64,arm64 -t $img .
