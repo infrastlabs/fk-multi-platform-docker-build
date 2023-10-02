@@ -1,7 +1,11 @@
 # https://gitee.com/g-k8s/fk-kind/blob/main/images/base/files/etc/containerd/config.toml
 # explicitly use v2 config format
 version = 2
-root = "/var/lib/containerd" #for dcp-scale sed
+root = "/var/lib/containerd"
+
+# https://github.com/kubernetes-sigs/kind/pull/932/files#diff-536ce64c8d733cac581fc72daf720b7d4671062823a176bda22cab9571e296d3
+# invalid disabled plugin URI "aufs" expect io.containerd.x.vx
+# disabled_plugins = ["aufs", "btrfs", "zfs"]
 
 [plugins."io.containerd.grpc.v1.cri".containerd]
   # save disk space when using a single snapshotter
@@ -29,3 +33,25 @@ root = "/var/lib/containerd" #for dcp-scale sed
   tolerate_missing_hugepages_controller = true
   # restrict_oom_score_adj needs to be true when running inside UserNS (rootless)
   restrict_oom_score_adj = false
+
+  # ++
+  stream_server_address = "127.0.0.1"
+  stream_server_port = "10010"
+  enable_selinux = false
+  # https://www.cnblogs.com/panw/p/16344617.html
+  systemd_cgroup = false
+
+# https://huaweicloud.csdn.net/63311a7dd3efff3090b521fa.html
+#配置ca文件路径和用户名密码
+[plugins."io.containerd.grpc.v1.cri".registry.configs]
+  [plugins."io.containerd.grpc.v1.cri".registry.configs."server.k8s.local:18443".tls]
+    ca_file = "/etc/docker/certs.d/server.k8s.local:18443/cert.crt"
+  [plugins."io.containerd.grpc.v1.cri".registry.configs."server.k8s.local:18443".auth]
+    username = "admin"
+    password = "admin123"
+
+
+
+# [plugins.cri.containerd.runtimes.runc.options]
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+	SystemdCgroup = false
