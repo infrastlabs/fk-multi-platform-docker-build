@@ -7,7 +7,7 @@ EOF
 
 cd /tmp
 img=t01
-img=test.registry.ssl/t012
+img=test.registry.ssl:8143/t012
 plat="--platform=amd64,arm64"
 
 docker build $plat -t $img .
