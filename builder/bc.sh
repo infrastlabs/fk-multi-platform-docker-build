@@ -13,6 +13,13 @@ buildctl build \
     --frontend=dockerfile.v0 \
     --local context=. \
     --local dockerfile=. \
-    --output type=image,name=test.registry.ssl:8143/bc:v0.1,push=true
+    --output type=local,dest=/tmp/path-to-output-dir
+    # --output type=image,name=test.registry.ssl:8143/bc:v0.1,push=true
     # --opt target=foo \
     # --opt build-arg:foo=bar
+    # --opt source=docker/dockerfile \
+    # --opt context=https://github.com/moby/moby.git \
+    # --opt build-arg:APT_MIRROR=cdn-fastly.deb.debian.org
+    # 
+    # --export-cache type=inline \
+    # --import-cache type=registry,ref=docker.io/username/image
