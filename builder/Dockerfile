@@ -79,7 +79,7 @@ RUN \
 
 # copy in static files
 # all scripts are 0755 (rwx r-x r-x)
-COPY files/usr/local/bin/* /usr/local/bin/
+COPY files/usr/local/bin/* /usr/local/apps/scripts/
 
 # RUN echo "Installing Packages ..." \
 #     && DEBIAN_FRONTEND=noninteractive clean-install \
@@ -91,11 +91,14 @@ COPY files/usr/local/bin/* /usr/local/bin/
 
 
 # bins
-RUN mkdir -p /opt/cni/bin /kind/; chmod +x /usr/local/bin/*
+RUN mkdir -p /opt/cni/bin /kind/;
 COPY --from=trans /rootfs /
 
 # 默认版本
 RUN \
+  chmod +x /usr/local/apps/scripts/*; \
+  ls /usr/local/apps/scripts/ |while read one; do ln -s /usr/local/apps/scripts/$one /usr/local/bin/; done; \
+  \
   ln -s /usr/local/apps/cfssl/cfssl_1.6.3_linux_amd64 /usr/local/bin/cfssl; \
   ln -s /usr/local/apps/cfssl/cfssljson_1.6.3_linux_amd64 /usr/local/bin/cfssljson; \
   ln -s /usr/local/apps/cfssl/cfssl-certinfo_1.6.3_linux_amd64 /usr/local/bin/cfssl-certinfo; \
