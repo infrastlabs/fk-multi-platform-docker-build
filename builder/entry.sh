@@ -6,32 +6,29 @@ cd $cur
 function dealKind(){
     echo ".env>>> HOST=$HOST"
 
-    # sv's logfile
-    mkdir -p /var/log/supervisor
+    # sv
     rm -f /usr/bin/sv; echo -e "#!/bin/bash\ntest -z "\$1" && exit 0; go-supervisord ctl \$@" > /usr/bin/sv; chmod +x /usr/bin/sv
     
     # cat supervisor.service > /lib/systemd/system/supervisor.service
-    mkdir -p /etc/supervisor
+    mkdir -p /etc/supervisor /var/log/supervisor $cur/logs #-$h2
     cat sv2.conf > /etc/supervisor/supervisord.conf
-    sed -i "s^_HOSTNAME_^$h2^g" /etc/supervisor/supervisord.conf
-    mkdir -p $cur/logs-$h2
+    # sed -i "s^_HOSTNAME_^$h2^g" /etc/supervisor/supervisord.conf
 
 
     # bins cgroup_dbg
-    chmod +x .bin/*
-    \cp .bin/* /usr/local/bin
+    # chmod +x .bin/*; \cp .bin/* /usr/local/bin
 
     # ctd's root dir; privateCrt
-    cat .ctd/config.toml > /etc/containerd/config.toml
+    # cat .ctd/config.toml > /etc/containerd/config.toml
     # test "$SPLIT_CTD_DATA" == "true" && sed -i "s^root = \"/var/lib/containerd\"^root = \"/var/lib/containerd/ctd-$h2\"^g" /etc/containerd/config.toml
-    # TLS-Registry-Cert
-    bash regcert.sh
 
     # cni conf
-    rm -f  /etc/cni/net.d/*
-    cat .cni/bridge-nerdctl-cpout.conflist > /etc/cni/net.d/bridge-nerdctl-cpout.conflist
+    # rm -f  /etc/cni/net.d/*
+    # cat .cni/bridge-nerdctl-cpout.conflist > /etc/cni/net.d/bridge-nerdctl-cpout.conflist
+    
 
-
+    # TLS-Registry-Cert
+    bash regcert.sh
 
     # docker login; 免进入kind容器拉镜像还得login; docker login 不依赖ctd的启动
     # echo admin123 |docker login server.k8s.local:18443 --username=admin --password-stdin
@@ -53,15 +50,15 @@ function dealKind(){
     sudo sysctl fs.inotify.max_user_instances=512000 #宿主机直接执行一次， ct-kubelet可生效
     sudo sysctl fs.inotify.max_user_watches=5242880
 }
-h2=$(hostname); #$HOSTNAME
-h2=${h2:0:5}
+# h2=$(hostname); h2=${h2:0:5} #$HOSTNAME
 dealKind
 
 # tail -f /dev/null #test
-# systemd
+# systemd/sv
 # exec /sbin/init
-
-# go-sv
-sed -i 's^exec .*^exec /usr/local/bin/go-supervisord -c  /etc/supervisor/supervisord.conf^g' /usr/local/bin/entrypoint
-exec /usr/local/bin/entrypoint /sbin/init
 # exec /usr/bin/supervisord -n -c  /etc/supervisor/supervisord.conf
+
+# entry-sv
+# sed -i 's^exec .*^exec /usr/local/bin/go-supervisord -c  /etc/supervisor/supervisord.conf^g' /usr/local/bin/entrypoint
+# exec /usr/local/bin/entrypoint /sbin/init
+exec /usr/local/bin/entrypoint /usr/local/bin/go-supervisord -c  /etc/supervisor/supervisord.conf
