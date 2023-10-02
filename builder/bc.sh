@@ -4,6 +4,7 @@ FROM registry.cn-shenzhen.aliyuncs.com/infrasync/alpine:3.13.12
 RUN echo 123;  uname -a; 
 EOF
 
+# @buildctl, test `buildkitd  --oci-worker=true --containerd-worker=false` (runc only)
 
 # buildctl build ... \
 # --output type=image,\"name=docker.io/username/image,docker.io/username2/image2\",push=true
