@@ -25,6 +25,7 @@ jobs:
           # INFO
           pwd && ls -l
           docker version
+          docker buildx version
           free -h; df -h; ip a |grep inet; uname -a;
           
           # ENV
