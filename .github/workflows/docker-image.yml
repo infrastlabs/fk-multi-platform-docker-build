@@ -1,7 +1,7 @@
 name: docker-image
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev", "sam-custom" ]
   pull_request:
     branches: [ "dev" ]
 jobs:
