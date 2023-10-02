@@ -10,7 +10,7 @@ echo "${DOCKER_REGISTRY_PW_dockerhub}" |docker login --username=${DOCKER_REGISTR
         
 ns=infrastlabs
 # ver=v1.13.0-k2317-v2.4 #v2
-ver=lite2.5
+ver=v1.0 #lite2.5
 case "$1" in
 *)
     cd builder;
