@@ -69,11 +69,11 @@ RUN \
   && ln -s /usr/bin/vim.tiny /usr/bin/vt \
   && rm -f /bin/sh && ln -s /bin/bash /bin/sh \
   # && ln -s /usr/bin/supervisorctl /usr/bin/sv \
-  && echo "alias ll='ls -lF'; alias la='ls -A'; alias l='ls -CF';" >> /root/.bashrc; \
-  && echo "source <(nerdctl completion bash);" >> /root/.bashrc; \
-  && echo "source <(nerdctl completion bash |sed \"s/nerdctl/docker/g\");" >> /root/.bashrc; \
+  && echo "alias ll='ls -lF'; alias la='ls -A'; alias l='ls -CF';" >> /root/.bashrc \
+  && echo "source <(nerdctl completion bash);" >> /root/.bashrc \
+  && echo "source <(nerdctl completion bash |sed \"s/nerdctl/docker/g\");" >> /root/.bashrc \
   \
-  mkdir -p /var/log/supervisor;
+  && mkdir -p /var/log/supervisor;
   # /etc/dropbear 
 
 
