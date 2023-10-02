@@ -1,0 +1,4 @@
+tree*.txt
+*.md
+bins
+**/usr/local/bin/*-org
