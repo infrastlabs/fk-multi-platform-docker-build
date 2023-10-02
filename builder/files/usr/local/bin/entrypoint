@@ -28,8 +28,8 @@ if grep -Eqv "0[[:space:]]+0[[:space:]]+4294967295" /proc/self/uid_map; then
 fi
 
 validate_userns() {
-  if [[ -z "${userns}" ]]; then
-    return
+  if [[ -z "${userns}" ]]; then #rotoless模式
+    return #return-func, not exit
   fi
 
   local nofile_hard
@@ -91,7 +91,7 @@ overlayfs_preferrable() {
 
 configure_containerd() {
   local snapshotter=${KIND_EXPERIMENTAL_CONTAINERD_SNAPSHOTTER:-}
-  if [[ -n "$userns" ]]; then
+  if [[ -n "$userns" ]]; then #[-s $file]; -n "$str": str非空则true || -z
     # userns (rootless) configs
 
     # Adjust oomScoreAdj
@@ -267,7 +267,7 @@ fix_machine_id() {
   # use machine-id internally to distinguish nodes.
   echo 'INFO: clearing and regenerating /etc/machine-id' >&2
   rm -f /etc/machine-id
-  systemd-machine-id-setup
+  # systemd-machine-id-setup #none-sysd
 }
 
 fix_product_name() {
