@@ -23,7 +23,7 @@ tree -L 2
 
 ################
 cd /down;
-mkdir -p /rootfs/usr/local/cfssl /rootfs/usr/local/kedge /rootfs/usr/local/bin/ /rootfs/usr/local/sbin/ /rootfs/opt/cni/bin/
+mkdir -p /rootfs/usr/local/{cfssl,buildkit} /rootfs/usr/local/kedge /rootfs/usr/local/bin/ /rootfs/usr/local/sbin/ /rootfs/opt/cni/bin/
 # cri: ctd,fuse-overlayfs,cni,runc
 \cp -a $arch/containerd-1.6.15-linux-$arch/bin/* /rootfs/usr/local/bin/
 \cp -a $arch/containerd-fuse-overlayfs-1.0.5-linux-$arch/containerd-fuse-overlayfs-grpc /rootfs/usr/local/bin/
@@ -33,7 +33,8 @@ mkdir -p /rootfs/usr/local/cfssl /rootfs/usr/local/kedge /rootfs/usr/local/bin/ 
 \cp -a $arch/crictl-v1.26.0-linux-$arch/crictl /rootfs/usr/local/bin/
 \cp -a $arch/nerdctl-1.1.0-linux-$arch/nerdctl /rootfs/usr/local/bin/docker
 # 23.10 +buildkit
-\cp -a $arch/buildkit-v0.12.2.linux-$arch/bin/* /rootfs/usr/local/bin/
+\cp -a $arch/buildkit-v0.12.2.linux-$arch/bin/* /rootfs/usr/local/buildkit/
+ls /rootfs/usr/local/buildkit/ |while read one; do ln -s /usr/local/buildkit/$one /usr/local/bin; done
 
 # 23.2.4: +cfssl,dcp,gosv
 if [ "amd64" == "$arch" ]; then #只有x64版本
