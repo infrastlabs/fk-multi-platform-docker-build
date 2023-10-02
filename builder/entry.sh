@@ -57,8 +57,9 @@ dealKind
 # systemd/sv
 # exec /sbin/init
 # exec /usr/bin/supervisord -n -c  /etc/supervisor/supervisord.conf
+exec /usr/local/bin/go-supervisord -c  /etc/supervisor/supervisord.conf
 
 # entry-sv
 # sed -i 's^exec .*^exec /usr/local/bin/go-supervisord -c  /etc/supervisor/supervisord.conf^g' /usr/local/bin/entrypoint
 # exec /usr/local/bin/entrypoint /sbin/init
-exec /usr/local/bin/entrypoint /usr/local/bin/go-supervisord -c  /etc/supervisor/supervisord.conf
+# exec /usr/local/bin/entrypoint /usr/local/bin/go-supervisord -c  /etc/supervisor/supervisord.conf
