@@ -102,7 +102,7 @@ RUN \
   find /usr/local/bin /opt/cni/bin 
 
 
-COPY ./files/bridge-nerdctl-cpout.conflist /etc/cni/net.d/
+# COPY ./files/etc/cni/net.d/bridge-nerdctl-cpout.conflist /etc/cni/net.d/
 # COPY ./files/10-containerd-net.conflist /etc/cni/net.d/
 # COPY ./files/edgecore-conf.yml /
 # copy> add
