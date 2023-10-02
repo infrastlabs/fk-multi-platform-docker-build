@@ -34,7 +34,7 @@ ls /rootfs/usr/local/apps/containerd/ |while read one; do ln -s /usr/local/apps/
 \cp -a $arch/runc.$arch /rootfs/usr/local/sbin/runc
 
 # cri_tools: crictl,nerdctl
-\cp -a $arch/crictl-v1.26.0-linux-$arch/crictl /rootfs/usr/local/bin/
+# \cp -a $arch/crictl-v1.26.0-linux-$arch/crictl /rootfs/usr/local/bin/
 \cp -a $arch/nerdctl-1.1.0-linux-$arch/nerdctl /rootfs/usr/local/bin
 ln -s /usr/local/bin/nerdctl /rootfs/usr/local/bin/docker
 # 23.10 +buildkit
