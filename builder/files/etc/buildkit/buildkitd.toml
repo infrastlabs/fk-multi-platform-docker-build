@@ -1,0 +1,5 @@
+# optionally mirror configuration can be done by defining it as a registry.
+# https-insecure: for bc.sh's build
+[registry."test.registry.ssl:8143"]
+  http = false
+  insecure = true
