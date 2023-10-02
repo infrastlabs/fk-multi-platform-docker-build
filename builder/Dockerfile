@@ -77,10 +77,6 @@ RUN \
   # /etc/dropbear 
 
 
-# copy in static files
-# all scripts are 0755 (rwx r-x r-x)
-COPY files/usr/local/bin/* /usr/local/apps/scripts/
-
 # RUN echo "Installing Packages ..." \
 #     && DEBIAN_FRONTEND=noninteractive clean-install \
 #       iptables iproute2 bash ca-certificates curl rsync \
@@ -94,10 +90,20 @@ COPY files/usr/local/bin/* /usr/local/apps/scripts/
 RUN mkdir -p /opt/cni/bin /kind/;
 COPY --from=trans /rootfs /
 
+# copy in static files
+# # all scripts are 0755 (rwx r-x r-x)
+# COPY files/usr/local/bin/* /usr/local/apps/scripts/
+
+# COPY ./files/etc/cni/net.d/bridge-nerdctl-cpout.conflist /etc/cni/net.d/
+# COPY ./files/10-containerd-net.conflist /etc/cni/net.d/
+# COPY ./files/edgecore-conf.yml /
+# copy> add
+ADD files/etc /etc
+
 # 默认版本
+  # chmod +x /usr/local/apps/scripts/*; \
+  # ls /usr/local/apps/scripts/ |while read one; do ln -s /usr/local/apps/scripts/$one /usr/local/bin/; done; \
 RUN \
-  chmod +x /usr/local/apps/scripts/*; \
-  ls /usr/local/apps/scripts/ |while read one; do ln -s /usr/local/apps/scripts/$one /usr/local/bin/; done; \
   \
   ln -s /usr/local/apps/cfssl/cfssl_1.6.3_linux_amd64 /usr/local/bin/cfssl; \
   ln -s /usr/local/apps/cfssl/cfssljson_1.6.3_linux_amd64 /usr/local/bin/cfssljson; \
@@ -106,12 +112,6 @@ RUN \
   ln -s /usr/local/bin/docker-compose /usr/local/bin/dcp; \
   find /usr/local/bin /opt/cni/bin 
 
-
-# COPY ./files/etc/cni/net.d/bridge-nerdctl-cpout.conflist /etc/cni/net.d/
-# COPY ./files/10-containerd-net.conflist /etc/cni/net.d/
-# COPY ./files/edgecore-conf.yml /
-# copy> add
-ADD files/etc /etc
 
 #[linux/amd64 stage-4 14/14] 52 0.070 /bin/sh: line 1: /usr/local/bin/ctr: No such file or directory
 #57 0.116 qemu-aarch64: Could not open '/lib/ld-linux-aarch64.so.1': No such file or directory
