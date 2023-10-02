@@ -13,7 +13,8 @@ buildctl build \
     --frontend=dockerfile.v0 \
     --local context=. \
     --local dockerfile=. \
-    --output type=local,dest=/tmp/path-to-output-dir
+    --output type=image,name=test.registry.ssl:8143/bc:v0.1,push=true
+    # --output type=local,dest=/tmp/path-to-output-dir
     
     # https://github.com/moby/buildkit#starting-the-buildkitd-daemon
     # --output type=local,dest=./bin/release,platform-split=false
