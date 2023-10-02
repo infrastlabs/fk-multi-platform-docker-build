@@ -5,7 +5,7 @@ version: '2.4' #2.4 > 2.0 (docker v1.10.3 @barge)
 #systemd@cgroup_v2(--cgroupns=host): #https://github.com/docker/compose/issues/8167
 services:
   builder:
-    image: registry.cn-shenzhen.aliyuncs.com/infrastlabs/edgecore:lite2.5 #v2.4 #@barge-docker v1.10.3
+    image: registry.cn-shenzhen.aliyuncs.com/infrastlabs/multi-plat-builder:v1.0
     # entrypoint: tail -f /dev/null 
     entrypoint: /bin/bash /srv/local/builder/entry.sh
     restart: unless-stopped
