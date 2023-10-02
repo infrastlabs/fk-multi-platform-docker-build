@@ -22,8 +22,8 @@ services:
       - /run
       - /run/lock
       - /tmp
-    extra_hosts:
-      - "server.k8s.local:${SERVER_IP:-172.25.23.194}"
+    # extra_hosts:
+    #   - "server.k8s.local:${SERVER_IP:-172.25.23.194}"
     volumes:
     - /sys/fs/cgroup:/sys/fs/cgroup:rw  #kubelet需要
     - /_ext:/_ext
