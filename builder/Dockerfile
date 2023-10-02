@@ -70,6 +70,8 @@ RUN \
   && rm -f /bin/sh && ln -s /bin/bash /bin/sh \
   # && ln -s /usr/bin/supervisorctl /usr/bin/sv \
   && echo "alias ll='ls -lF'; alias la='ls -A'; alias l='ls -CF';" >> /root/.bashrc; \
+  && echo "source <(nerdctl completion bash);" >> /root/.bashrc; \
+  && echo "source <(nerdctl completion bash |sed \"s/nerdctl/docker/g\");" >> /root/.bashrc; \
   \
   mkdir -p /var/log/supervisor;
   # /etc/dropbear 
@@ -94,9 +96,9 @@ COPY --from=trans /rootfs /
 
 # 默认版本
 RUN \
-  ln -s /usr/local/cfssl/cfssl_1.6.3_linux_amd64 /usr/local/bin/cfssl; \
-  ln -s /usr/local/cfssl/cfssljson_1.6.3_linux_amd64 /usr/local/bin/cfssljson; \
-  ln -s /usr/local/cfssl/cfssl-certinfo_1.6.3_linux_amd64 /usr/local/bin/cfssl-certinfo; \
+  ln -s /usr/local/apps/cfssl/cfssl_1.6.3_linux_amd64 /usr/local/bin/cfssl; \
+  ln -s /usr/local/apps/cfssl/cfssljson_1.6.3_linux_amd64 /usr/local/bin/cfssljson; \
+  ln -s /usr/local/apps/cfssl/cfssl-certinfo_1.6.3_linux_amd64 /usr/local/bin/cfssl-certinfo; \
   \
   ln -s /usr/local/bin/docker-compose /usr/local/bin/dcp; \
   find /usr/local/bin /opt/cni/bin 
