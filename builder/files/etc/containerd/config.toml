@@ -1,3 +1,4 @@
+# https://gitee.com/g-k8s/fk-kind/blob/main/images/base/files/etc/containerd/config.toml
 # explicitly use v2 config format
 version = 2
 root = "/var/lib/containerd" #for dcp-scale sed
