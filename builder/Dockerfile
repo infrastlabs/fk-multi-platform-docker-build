@@ -73,7 +73,7 @@ RUN \
   && echo "source <(nerdctl completion bash);" >> /root/.bashrc \
   && echo "source <(nerdctl completion bash |sed \"s/nerdctl/docker/g\");" >> /root/.bashrc \
   \
-  && mkdir -p /var/log/supervisor;
+  && mkdir -p /var/log/supervisor /opt/cni/bin;
   # /etc/dropbear 
 
 
@@ -87,21 +87,17 @@ RUN \
 
 
 # bins
-RUN mkdir -p /opt/cni/bin /kind/;
+# RUN mkdir -p /opt/cni/bin;
 COPY --from=trans /rootfs /
 
 # copy in static files
 # # all scripts are 0755 (rwx r-x r-x)
 # COPY files/usr/local/bin/* /usr/local/apps/scripts/
-
-# COPY ./files/etc/cni/net.d/bridge-nerdctl-cpout.conflist /etc/cni/net.d/
-# COPY ./files/10-containerd-net.conflist /etc/cni/net.d/
-# COPY ./files/edgecore-conf.yml /
 # copy> add
 ADD files/etc /etc
 
 # 默认版本
-  # chmod +x /usr/local/apps/scripts/*; \
+  # mkdir -p /kind; chmod +x /usr/local/apps/scripts/*; \
   # ls /usr/local/apps/scripts/ |while read one; do ln -s /usr/local/apps/scripts/$one /usr/local/bin/; done; \
 RUN \
   \
