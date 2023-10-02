@@ -22,7 +22,7 @@ case "$1" in
     cimg="multi-plat-builder-cache:$ver" #multi- 
     cache="--cache-from type=registry,ref=$ali/$ns/$cimg --cache-to type=registry,ref=$ali/$ns/$cimg"
 
-    plat="--platform linux/amd64,linux/arm64" ##,linux/arm
+    plat="--platform linux/amd64,linux/arm64 --provenance=false" ##,linux/arm
     args="--build-arg FULL=/.."
     docker buildx build $cache $plat $args --push -t $repo/$ns/$img -f Dockerfile . 
     ;;
