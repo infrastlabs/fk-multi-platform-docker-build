@@ -6,4 +6,4 @@ RUN echo 123;  uname -a;
 EOF
 
 cd /tmp
-docker build -t t01 .
+docker build --platform=amd64,arm64 -t t01 .
