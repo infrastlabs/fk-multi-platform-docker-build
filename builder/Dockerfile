@@ -1,9 +1,4 @@
-FROM postfinance/kubelet-csr-approver:v1.0.0 as approver
-FROM dyrnq/metrics-server:v0.6.2 as metrics
-FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/edgecore:bins-v2.4 as bins
-# FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/alpine-ext:weak as trans ##ERR no-arm
-# FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/alpine as trans
-# TODO image-syncer>> 复合IMG的同步;
+FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/edgecore:bins-v2.5 as bins
 FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/docker-headless:core as trans
   WORKDIR /down
   COPY --from=bins /down /down
@@ -12,36 +7,13 @@ FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/docker-headless:core as trans
   RUN bash /down/_trans.sh; echo 1
   RUN \
     rm -rf /rootfs/usr/local/kedge /rootfs/usr/local/k8s;
-    # cd /rootfs/usr/local/bin; rm -f k3s-v1.23.17; \
-    # Done: @_trans.sh
-    # rm -f /rootfs/usr/local/bin/containerd-stress /rootfs/usr/local/bin/containerd-shim-runc-v1 \
-    # && chmod 755 /rootfs/usr/local/sbin/runc
-
-
-# For systemd + docker configuration used below, see the following references:
-# https://systemd.io/CONTAINER_INTERFACE/
-# ARG BASE_IMAGE=ubuntu:21.10 >> headless:core multi复合img<amd64,arm64>
-#   TODO: 当前ali上该img是纯x64的?? >> image-sync同步multiArch
-#   FROM registry.cn-shenzhen.aliyuncs.com/infrastlabs/docker-headless:core
-# FROM infrastlabs/docker-headless:core
-
-
-# ref: fk-docker-libvirtd:/Dockerfile
-# FROM registry.cn-shenzhen.aliyuncs.com/infrasync/alpine:3.13.12
-# ARG TARGETPLATFORM
-# RUN mkdir /kind/
-# RUN echo ${TARGETPLATFORM#*/} #不可解析
 
 # +ref: kube-cmd> headless/core/base
 FROM ubuntu:20.04
 ENV \
   DEBIAN_FRONTEND=noninteractive
-# use cat > excludes: 再少一层
-# COPY src/excludes /etc/dpkg/dpkg.cfg.d/excludes
-# mirrors.tuna.tsinghua.edu.cn
-# mirrors.ustc.edu.cn
-# mirrors.aliyun.com
-# mirrors.163.com
+# mirrors.tuna.tsinghua.edu.cn #mirrors.ustc.edu.cn
+# mirrors.aliyun.com #mirrors.163.com
 ARG TARGETPLATFORM
 RUN export DOMAIN="mirrors.ustc.edu.cn"; \
   test -z "$(echo $TARGETPLATFORM |grep arm)" && target=ubuntu || target=ubuntu-ports; \
@@ -64,6 +36,7 @@ path-exclude /usr/share/lintian/*\n\
   # \
 # MISC 15.1 MB
 # fuse-overlayfs : Depends: fuse3 but it is not going to be installed
+# dnsutils(dig,nslookup)
 RUN echo skip.cache.01; \
   # \2487 kB
   apt.sh wget ca-certificates \
@@ -75,7 +48,6 @@ RUN echo skip.cache.01; \
   # \2476 kB
   # dropbear-bin dropbear-run openssh-sftp-server \
   curl lftp jq \
-  # nfs-common fuse-overlayfs \
   bash-completion dnsutils git 
 # font> axin(badColorView@alpine3.13)
 RUN \
@@ -107,67 +79,32 @@ RUN \
 # all scripts are 0755 (rwx r-x r-x)
 COPY files/usr/local/bin/* /usr/local/bin/
 
-# +bash-completion dnsutils(dig,nslookup)
 # RUN echo "Installing Packages ..." \
 #     && DEBIAN_FRONTEND=noninteractive clean-install \
+#       iptables iproute2 bash ca-certificates curl rsync \
+#       \
 #       systemd \
-#       conntrack iptables iproute2 ethtool socat util-linux mount ebtables kmod \
-#       libseccomp2 pigz \
-#       bash ca-certificates curl rsync \
-#       nfs-common fuse-overlayfs \
-#       jq bash-completion dnsutils
+#       conntrack ethtool socat util-linux mount ebtables kmod \
+#       libseccomp2 pigz nfs-common fuse-overlayfs \
 
 
 # bins
 RUN mkdir -p /opt/cni/bin /kind/
-# COPY ./bins2/amd64/containerd-1.6.15-linux-amd64/bin/* /usr/local/bin/
-# COPY ./bins2/amd64/containerd-fuse-overlayfs-1.0.5-linux-amd64/containerd-fuse-overlayfs-grpc /usr/local/bin/
-# COPY ./bins2/amd64/cni-plugins-linux-amd64-v1.2.0/* /opt/cni/bin/
-# COPY ./bins2/amd64/runc.amd64 /usr/local/sbin/runc
-# COPY ./bins2/amd64/crictl-v1.26.0-linux-amd64/crictl /usr/local/bin/
-# COPY ./bins2/amd64/nerdctl-1.1.0-linux-amd64/nerdctl /usr/local/bin/docker
-# COPY ./bins2/amd64/kubeedge-v1.10.3-linux-amd64/kubeedge-v1.10.3-linux-amd64/edge/edgecore /usr/local/bin/
 COPY --from=trans /rootfs /
 
-# https://github.com/kubeedge/kubeedge/releases/download/v1.9.5/kubeedge-v1.9.5-linux-amd64.tar.gz
-# kedge 1.10.3 52.0M|93.7M
-ARG KE_VER=v1.9.5
+# 默认版本
 RUN \
-  test -z "$(echo $TARGETPLATFORM |grep arm)" && wget https://ghproxy.com/https://github.com/kubeedge/kubeedge/releases/download/$KE_VER/kubeedge-$KE_VER-linux-amd64.tar.gz -qO - | tar -xz -C /tmp; \
-  test ! -z "$(echo $TARGETPLATFORM |grep arm)" && wget https://ghproxy.com/https://github.com/kubeedge/kubeedge/releases/download/$KE_VER/kubeedge-$KE_VER-linux-arm64.tar.gz -qO - | tar -xz -C /tmp; \
-  \
-  find /tmp/kubeedge-$KE_VER-linux-*; \
-  cp -a /tmp/kubeedge-$KE_VER-linux-*/edge/edgecore /usr/local/bin/; \
-  cp -a /tmp/kubeedge-$KE_VER-linux-*/cloud/cloudcore/cloudcore /usr/local/bin/; \
-  ls -lh /usr/local/bin/ |grep core;
-# RUN \
-#   wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://ghproxy.com/https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/2.28-r0/sgerrand.rsa.pub
-#   wget https://ghproxy.com/https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
-#   # apk add ./glibc-2.28-r0.apk
-#   apk add ./glibc-2.35-r1.apk #edgecore/cloudcore,ctd一样用不了
-
-RUN \
-  # 默认版本: k3s-v1.23.17 + kedge-v1.13.0
-  ln -s /usr/local/bin/k3s-v1.23.17 /usr/local/bin/k3s; \
-  # ln -s /usr/local/kedge/kubeedge-v1.13.0-linux-*/edge/edgecore /usr/local/bin/; \
-  # ln -s /usr/local/kedge/kubeedge-v1.13.0-linux-*/cloud/cloudcore/cloudcore /usr/local/bin/; \
-  \
   ln -s /usr/local/cfssl/cfssl_1.6.3_linux_amd64 /usr/local/bin/cfssl; \
   ln -s /usr/local/cfssl/cfssljson_1.6.3_linux_amd64 /usr/local/bin/cfssljson; \
   ln -s /usr/local/cfssl/cfssl-certinfo_1.6.3_linux_amd64 /usr/local/bin/cfssl-certinfo; \
+  \
   ln -s /usr/local/bin/docker-compose /usr/local/bin/dcp; \
   find /usr/local/bin /opt/cni/bin 
-  # /usr/local/kedge/
 
 
-# ref-img
-# COPY --from=approver /ko-app/kubelet-csr-approver /usr/local/bin/kubelet-csr-approver
-# COPY --from=metrics /metrics-server /usr/local/bin/metrics-server
-
-# COPY ./files/10-containerd-net.conflist /etc/cni/net.d/
 COPY ./files/bridge-nerdctl-cpout.conflist /etc/cni/net.d/
-COPY ./files/edgecore-conf.yml /
-# all configs are 0644 (rw- r-- r--)
+# COPY ./files/10-containerd-net.conflist /etc/cni/net.d/
+# COPY ./files/edgecore-conf.yml /
 # copy> add
 ADD files/etc /etc
 
