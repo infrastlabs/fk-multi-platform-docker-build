@@ -6,13 +6,15 @@
 #     ├── client.key           <-- Client key
 #     └── ca.crt               <-- Root CA that signed the registry certificate, in PEM
 
+echo 172.25.20.161 test.registry.ssl |sudo tee -a /etc/hosts
+
 # server.k8s.local:18443
 certDir=/etc/docker/certs.d/test.registry.ssl:8143
 mkdir -p $certDir
 # 1.ok with 1.18.06; err with 1.10.3@barge
 # 2.ctd still used.
 # 3.openssl 1000年, cfssl 27x年;
-cat > $certDir/cert.crt <<EOF
+cat <<EOF |sudo tee $certDir/cert.crt
 -----BEGIN CERTIFICATE-----
 MIICrjCCAZagAwIBAgIJAJeNn8hPcS4mMA0GCSqGSIb3DQEBCwUAMBkxFzAVBgNV
 BAMMDmV4YW1wbGUuY2EuY29tMCAXDTIyMDYzMDA3NTUxNloYDzMwMjExMDMxMDc1
